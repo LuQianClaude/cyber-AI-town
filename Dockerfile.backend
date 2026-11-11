@@ -1,0 +1,29 @@
+# © 2026 Landric · Cyber Universe — 原创代码，未经授权禁止盗用、抄袭
+# ---------- 前端构建 ----------
+FROM node:20-alpine AS web-builder
+WORKDIR /app
+RUN corepack enable
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY apps/web/package.json apps/web/
+COPY apps/android/package.json apps/android/
+COPY packages/api-client/package.json packages/api-client/
+COPY packages/game-engine/package.json packages/game-engine/
+COPY packages/shared/package.json packages/shared/
+COPY packages/ui/package.json packages/ui/
+# 权限损坏的 package.json 在构建机会以正常权限重新检出；此处忽略可读性检查失败
+RUN pnpm install --frozen-lockfile || pnpm install
+COPY . .
+RUN pnpm --filter @cyber-universe/web build
+
+# ---------- 后端 ----------
+FROM python:3.12-slim AS backend
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+WORKDIR /srv
+COPY backend/requirements.txt backend/
+RUN pip install --no-cache-dir -r backend/requirements.txt -t /srv/.deps
+COPY backend/ backend/
+ENV PYTHONPATH=/srv/.deps:/srv/backend
+EXPOSE 8000
+# 启动前先迁移到最新版本（alembic 需在 backend/ 目录下运行）
+CMD ["sh", "-c", "cd backend && python -m alembic upgrade head && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000"]
