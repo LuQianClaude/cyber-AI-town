@@ -1,0 +1,28 @@
+{
+  "name": "cyber-universe",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cyber Universe — AI Life Simulation Platform (pixel world + AI residents)",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "backend:dev": "cd backend && PYTHONPATH=.deps:. python3 -m uvicorn app.main:app --reload --port 8000",
+    "backend:test": "cd backend && PYTHONPATH=.deps:. python3 -m pytest tests -v",
+    "db:migrate": "cd backend && PYTHONPATH=.deps:. python3 -m alembic upgrade head",
+    "db:revision": "cd backend && PYTHONPATH=.deps:. python3 -m alembic revision --autogenerate",
+    "android:sync": "pnpm --filter @cyber-universe/web build && pnpm --filter @cyber-universe/android exec cap sync android"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.6.3",
+    "openapi-typescript": "^7.4.4"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

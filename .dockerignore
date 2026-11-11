@@ -1,0 +1,16 @@
+node_modules
+**/node_modules
+**/.deps
+**/__pycache__
+**/.pytest_cache
+**/*.db
+**/*.tsbuildinfo
+**/dist
+**/test-results
+**/playwright-report
+**/.turbo
+**/.env
+.git
+docs
+*.md
+!README.md

@@ -1,0 +1,26 @@
+# © 2026 九尾狐昭昭 · Cyber Universe — 原创代码，未经授权禁止盗用、抄袭
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      CYBER_DATABASE_URL: sqlite:////data/cyber_universe.db
+      CYBER_SECRET_KEY: ${CYBER_SECRET_KEY:-change-me-in-production}
+      CYBER_CORS_ORIGINS: ${CYBER_CORS_ORIGINS:-}
+    volumes:
+      - cu-data:/data
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  cu-data:

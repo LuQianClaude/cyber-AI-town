@@ -1,0 +1,17 @@
+{
+  "name": "@cyber-universe/android",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cyber Universe Android shell (Capacitor)",
+  "scripts": {
+    "cap": "cap",
+    "sync": "cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/core": "^6.2.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.0"
+  }
+}

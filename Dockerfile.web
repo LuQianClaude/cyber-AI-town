@@ -1,0 +1,21 @@
+# © 2026 Landric · Cyber Universe — 原创代码，未经授权禁止盗用、抄袭
+# ---------- 前端构建 ----------
+FROM node:20-alpine AS builder
+WORKDIR /app
+RUN corepack enable
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY apps/web/package.json apps/web/
+COPY packages/api-client/package.json packages/api-client/
+COPY packages/game-engine/package.json packages/game-engine/
+COPY packages/shared/package.json packages/shared/
+COPY packages/ui/package.json packages/ui/
+RUN pnpm install --frozen-lockfile || pnpm install
+COPY apps/web ./apps/web
+COPY packages ./packages
+RUN pnpm --filter @cyber-universe/web build
+
+# ---------- 静态服务 + 反代 ----------
+FROM nginx:1.27-alpine
+COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
